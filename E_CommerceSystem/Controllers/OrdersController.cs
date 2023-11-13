@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class OrdersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,21 +22,21 @@ namespace E_CommerceSystem.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.orders.Include(o => o.Users);
-            return View(await applicationDbContext.ToListAsync());
+            var eCommerceDbContext = _context.Orders.Include(o => o.User);
+            return View(await eCommerceDbContext.ToListAsync());
         }
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.orders == null)
+            if (id == null || _context.Orders == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.orders
-                .Include(o => o.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var order = await _context.Orders
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
                 return NotFound();
@@ -48,7 +48,7 @@ namespace E_CommerceSystem.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -57,7 +57,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,OrderDate,TotalAmount,ShippingAddress,PaymentStatus,OrderStatus,UserID")] Order order)
+        public async Task<IActionResult> Create([Bind("Id,OrderDate,TotalAmount,ShippingAddress,PaymentStatus,OrderStatus,UserId")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -65,24 +65,24 @@ namespace E_CommerceSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", order.UserID);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", order.UserId);
             return View(order);
         }
 
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.orders == null)
+            if (id == null || _context.Orders == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.orders.FindAsync(id);
+            var order = await _context.Orders.FindAsync(id);
             if (order == null)
             {
                 return NotFound();
             }
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", order.UserID);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", order.UserId);
             return View(order);
         }
 
@@ -91,9 +91,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,OrderDate,TotalAmount,ShippingAddress,PaymentStatus,OrderStatus,UserID")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,OrderDate,TotalAmount,ShippingAddress,PaymentStatus,OrderStatus,UserId")] Order order)
         {
-            if (id != order.ID)
+            if (id != order.Id)
             {
                 return NotFound();
             }
@@ -107,7 +107,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderExists(order.ID))
+                    if (!OrderExists(order.Id))
                     {
                         return NotFound();
                     }
@@ -118,21 +118,21 @@ namespace E_CommerceSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", order.UserID);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", order.UserId);
             return View(order);
         }
 
         // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.orders == null)
+            if (id == null || _context.Orders == null)
             {
                 return NotFound();
             }
 
-            var order = await _context.orders
-                .Include(o => o.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var order = await _context.Orders
+                .Include(o => o.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
                 return NotFound();
@@ -146,14 +146,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.orders == null)
+            if (_context.Orders == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.orders'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.Orders'  is null.");
             }
-            var order = await _context.orders.FindAsync(id);
+            var order = await _context.Orders.FindAsync(id);
             if (order != null)
             {
-                _context.orders.Remove(order);
+                _context.Orders.Remove(order);
             }
             
             await _context.SaveChangesAsync();
@@ -162,7 +162,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool OrderExists(int id)
         {
-          return (_context.orders?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Orders?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

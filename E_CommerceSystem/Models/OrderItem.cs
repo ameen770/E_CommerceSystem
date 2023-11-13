@@ -1,29 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace E_CommerceSystem.Models
+namespace E_CommerceSystem.Models;
+
+public partial class OrderItem
 {
-    public class OrderItem
-    {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        public int Quantity { get; set; }
-        [Required]
-        public decimal Price { get; set; }
+    public int Id { get; set; }
 
-        
-        //[Required]
-        public int? OrderID { get; set; }
+    public int Quantity { get; set; }
 
-        [ForeignKey("OrderID")]
-        public virtual Order Orders { get; set; }
+    public decimal Price { get; set; }
 
-        
-        //[Required]
-        public int? ProductID { get; set; }
+    public int OrderId { get; set; }
 
-        [ForeignKey("ProductID")]
-        public virtual Product Products { get; set; }
-    }
+    public int ProductId { get; set; }
+
+    public virtual Order Order { get; set; } = null!;
+
+    public virtual Product Product { get; set; } = null!;
 }

@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public CategoriesController(ApplicationDbContext context)
+        public CategoriesController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,21 +22,21 @@ namespace E_CommerceSystem.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-              return _context.categories != null ? 
-                          View(await _context.categories.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.categories'  is null.");
+              return _context.Categories != null ? 
+                          View(await _context.Categories.ToListAsync()) :
+                          Problem("Entity set 'ECommerceDbContext.Categories'  is null.");
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.categories == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.categories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -56,7 +56,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Description")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
         {
             if (ModelState.IsValid)
             {
@@ -70,12 +70,12 @@ namespace E_CommerceSystem.Controllers
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.categories == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.categories.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -88,9 +88,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Description")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Category category)
         {
-            if (id != category.ID)
+            if (id != category.Id)
             {
                 return NotFound();
             }
@@ -104,7 +104,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.ID))
+                    if (!CategoryExists(category.Id))
                     {
                         return NotFound();
                     }
@@ -121,13 +121,13 @@ namespace E_CommerceSystem.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.categories == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.categories
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (category == null)
             {
                 return NotFound();
@@ -141,14 +141,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.categories == null)
+            if (_context.Categories == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.categories'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.Categories'  is null.");
             }
-            var category = await _context.categories.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
-                _context.categories.Remove(category);
+                _context.Categories.Remove(category);
             }
             
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool CategoryExists(int id)
         {
-          return (_context.categories?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Categories?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

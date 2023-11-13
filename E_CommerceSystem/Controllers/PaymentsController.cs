@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class PaymentsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public PaymentsController(ApplicationDbContext context)
+        public PaymentsController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,22 +22,22 @@ namespace E_CommerceSystem.Controllers
         // GET: Payments
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.payments.Include(p => p.Orders).Include(p => p.Users);
-            return View(await applicationDbContext.ToListAsync());
+            var eCommerceDbContext = _context.Payments.Include(p => p.Order).Include(p => p.User);
+            return View(await eCommerceDbContext.ToListAsync());
         }
 
         // GET: Payments/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.payments == null)
+            if (id == null || _context.Payments == null)
             {
                 return NotFound();
             }
 
-            var payment = await _context.payments
-                .Include(p => p.Orders)
-                .Include(p => p.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var payment = await _context.Payments
+                .Include(p => p.Order)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (payment == null)
             {
                 return NotFound();
@@ -49,8 +49,8 @@ namespace E_CommerceSystem.Controllers
         // GET: Payments/Create
         public IActionResult Create()
         {
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus");
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address");
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -59,7 +59,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,PaymentDate,PaymentMethod,Amount,UserID,OrderID")] Payment payment)
+        public async Task<IActionResult> Create([Bind("Id,PaymentDate,PaymentMethod,Amount,UserId,OrderId")] Payment payment)
         {
             if (ModelState.IsValid)
             {
@@ -67,26 +67,26 @@ namespace E_CommerceSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus", payment.OrderID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", payment.UserID);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", payment.OrderId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
             return View(payment);
         }
 
         // GET: Payments/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.payments == null)
+            if (id == null || _context.Payments == null)
             {
                 return NotFound();
             }
 
-            var payment = await _context.payments.FindAsync(id);
+            var payment = await _context.Payments.FindAsync(id);
             if (payment == null)
             {
                 return NotFound();
             }
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus", payment.OrderID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", payment.UserID);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", payment.OrderId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
             return View(payment);
         }
 
@@ -95,9 +95,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,PaymentDate,PaymentMethod,Amount,UserID,OrderID")] Payment payment)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PaymentDate,PaymentMethod,Amount,UserId,OrderId")] Payment payment)
         {
-            if (id != payment.ID)
+            if (id != payment.Id)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PaymentExists(payment.ID))
+                    if (!PaymentExists(payment.Id))
                     {
                         return NotFound();
                     }
@@ -122,23 +122,23 @@ namespace E_CommerceSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus", payment.OrderID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", payment.UserID);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", payment.OrderId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", payment.UserId);
             return View(payment);
         }
 
         // GET: Payments/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.payments == null)
+            if (id == null || _context.Payments == null)
             {
                 return NotFound();
             }
 
-            var payment = await _context.payments
-                .Include(p => p.Orders)
-                .Include(p => p.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var payment = await _context.Payments
+                .Include(p => p.Order)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (payment == null)
             {
                 return NotFound();
@@ -152,14 +152,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.payments == null)
+            if (_context.Payments == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.payments'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.Payments'  is null.");
             }
-            var payment = await _context.payments.FindAsync(id);
+            var payment = await _context.Payments.FindAsync(id);
             if (payment != null)
             {
-                _context.payments.Remove(payment);
+                _context.Payments.Remove(payment);
             }
             
             await _context.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool PaymentExists(int id)
         {
-          return (_context.payments?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Payments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

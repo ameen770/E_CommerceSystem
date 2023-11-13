@@ -1,29 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace E_CommerceSystem.Models
+namespace E_CommerceSystem.Models;
+
+public partial class CartItem
 {
-    public class CartItem
-    {
-        [Key]
-        public int ID { get; set; }
-        
-        [Required(ErrorMessage = "يجب إدخال الكمية")]
-        public int Quantity { get; set; }
-        
-        [Required(ErrorMessage = "يجب إدخال السعر")]
-        public decimal Price { get; set; }
+    public int Id { get; set; }
 
-        //[Required(ErrorMessage = "يجب تحديد كود البطاقة")] 
-        public int? CartID { get; set; }
+    public int Quantity { get; set; }
 
-        [ForeignKey("CartID")]
-        public virtual Cart Carts { get; set; }
+    public decimal Price { get; set; }
 
-        //[Required(ErrorMessage = "يجب كود المنتج")]
-        public int? ProductID { get; set; }
+    public int CartId { get; set; }
 
-        [ForeignKey("ProductID")]
-        public virtual Product Products { get; set; }
-    }
+    public int ProductId { get; set; }
+
+    public virtual Cart Cart { get; set; } = null!;
+
+    public virtual Product Product { get; set; } = null!;
 }

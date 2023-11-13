@@ -1,28 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace E_CommerceSystem.Models
+namespace E_CommerceSystem.Models;
+
+public partial class Wishlist
 {
-    public class Wishlist
-    {
-        [Key]
-        public int ID { get; set; }
+    public int Id { get; set; }
 
-        [Required]
-        public DateTime Date { get; set; }
+    public DateTime Date { get; set; }
 
-        
-        //[Required]
-        public int? UserID { get; set; }
+    public int UserId { get; set; }
 
-        [ForeignKey("UserID")]
-        public virtual User Users { get; set; }
+    public int ProductId { get; set; }
 
-        
-        //[Required]
-        public int? ProductID { get; set; }
+    public virtual Product Product { get; set; } = null!;
 
-        [ForeignKey("ProductID")]
-        public virtual Product Products { get; set; }
-    }
+    public virtual User User { get; set; } = null!;
 }

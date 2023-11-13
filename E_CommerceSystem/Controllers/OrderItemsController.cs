@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class OrderItemsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public OrderItemsController(ApplicationDbContext context)
+        public OrderItemsController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,22 +22,22 @@ namespace E_CommerceSystem.Controllers
         // GET: OrderItems
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.orderItems.Include(o => o.Orders).Include(o => o.Products);
-            return View(await applicationDbContext.ToListAsync());
+            var eCommerceDbContext = _context.OrderItems.Include(o => o.Order).Include(o => o.Product);
+            return View(await eCommerceDbContext.ToListAsync());
         }
 
         // GET: OrderItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.orderItems == null)
+            if (id == null || _context.OrderItems == null)
             {
                 return NotFound();
             }
 
-            var orderItem = await _context.orderItems
-                .Include(o => o.Orders)
-                .Include(o => o.Products)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var orderItem = await _context.OrderItems
+                .Include(o => o.Order)
+                .Include(o => o.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (orderItem == null)
             {
                 return NotFound();
@@ -49,8 +49,8 @@ namespace E_CommerceSystem.Controllers
         // GET: OrderItems/Create
         public IActionResult Create()
         {
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus");
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category");
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
             return View();
         }
 
@@ -59,7 +59,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Quantity,Price,OrderID,ProductID")] OrderItem orderItem)
+        public async Task<IActionResult> Create([Bind("Id,Quantity,Price,OrderId,ProductId")] OrderItem orderItem)
         {
             if (ModelState.IsValid)
             {
@@ -67,26 +67,26 @@ namespace E_CommerceSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus", orderItem.OrderID);
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", orderItem.ProductID);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", orderItem.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", orderItem.ProductId);
             return View(orderItem);
         }
 
         // GET: OrderItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.orderItems == null)
+            if (id == null || _context.OrderItems == null)
             {
                 return NotFound();
             }
 
-            var orderItem = await _context.orderItems.FindAsync(id);
+            var orderItem = await _context.OrderItems.FindAsync(id);
             if (orderItem == null)
             {
                 return NotFound();
             }
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus", orderItem.OrderID);
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", orderItem.ProductID);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", orderItem.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", orderItem.ProductId);
             return View(orderItem);
         }
 
@@ -95,9 +95,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Quantity,Price,OrderID,ProductID")] OrderItem orderItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Quantity,Price,OrderId,ProductId")] OrderItem orderItem)
         {
-            if (id != orderItem.ID)
+            if (id != orderItem.Id)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!OrderItemExists(orderItem.ID))
+                    if (!OrderItemExists(orderItem.Id))
                     {
                         return NotFound();
                     }
@@ -122,23 +122,23 @@ namespace E_CommerceSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderID"] = new SelectList(_context.orders, "ID", "OrderStatus", orderItem.OrderID);
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", orderItem.ProductID);
+            ViewData["OrderId"] = new SelectList(_context.Orders, "Id", "Id", orderItem.OrderId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", orderItem.ProductId);
             return View(orderItem);
         }
 
         // GET: OrderItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.orderItems == null)
+            if (id == null || _context.OrderItems == null)
             {
                 return NotFound();
             }
 
-            var orderItem = await _context.orderItems
-                .Include(o => o.Orders)
-                .Include(o => o.Products)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var orderItem = await _context.OrderItems
+                .Include(o => o.Order)
+                .Include(o => o.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (orderItem == null)
             {
                 return NotFound();
@@ -152,14 +152,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.orderItems == null)
+            if (_context.OrderItems == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.orderItems'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.OrderItems'  is null.");
             }
-            var orderItem = await _context.orderItems.FindAsync(id);
+            var orderItem = await _context.OrderItems.FindAsync(id);
             if (orderItem != null)
             {
-                _context.orderItems.Remove(orderItem);
+                _context.OrderItems.Remove(orderItem);
             }
             
             await _context.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool OrderItemExists(int id)
         {
-          return (_context.orderItems?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.OrderItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

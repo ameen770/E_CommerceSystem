@@ -1,31 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace E_CommerceSystem.Models
+namespace E_CommerceSystem.Models;
+
+public partial class Review
 {
-    public class Review
-    {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        public int Rating { get; set; }
-        [Required]
-        public string Comment { get; set; }
-        [Required]
-        public DateTime Date { get; set; }
+    public int Id { get; set; }
 
-        
-        //[Required]
-        public int? UserID { get; set; }
+    public int? Rating { get; set; }
 
-        [ForeignKey("UserID")]
-        public virtual User Users { get; set; }
+    public string? Comment { get; set; }
 
-        
-        //[Required]
-        public int? ProductID { get; set; }
+    public DateTime? Date { get; set; }
 
-        [ForeignKey("ProductID")]
-        public virtual Product Products { get; set; }
-    }
+    public int? UserId { get; set; }
+
+    public int? ProductId { get; set; }
+
+    public virtual Product? Product { get; set; }
+
+    public virtual User? User { get; set; }
 }

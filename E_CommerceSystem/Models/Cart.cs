@@ -1,29 +1,19 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace E_CommerceSystem.Models
+namespace E_CommerceSystem.Models;
+
+public partial class Cart
 {
-    public partial class Cart
-    {
-        public Cart()
-        {
-            CartItems = new HashSet<CartItem>();
-        }
+    public int Id { get; set; }
 
-        [Key]
-        public int ID { get; set; }
+    public DateTime CreationDate { get; set; }
 
-        public DateTime CreationDate { get; set; }
-        
-        [Required(ErrorMessage = "يجب إدخال الكمية")]
-        public decimal TotalAmount { get; set; }
+    public decimal TotalAmount { get; set; }
 
-        //[Required(ErrorMessage = "يجب تحديد كود المستخدم")]
-        public int? UserID { get; set; }
+    public int UserId { get; set; }
 
-        [ForeignKey("UserID")]
-        public virtual User Users { get; set; }
-        
-        public virtual ICollection<CartItem> CartItems { get; set; }
-    }
+    public virtual ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+
+    public virtual User User { get; set; } = null!;
 }

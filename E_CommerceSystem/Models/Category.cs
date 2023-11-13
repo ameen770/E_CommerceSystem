@@ -1,23 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
-namespace E_CommerceSystem.Models
+namespace E_CommerceSystem.Models;
+
+public partial class Category
 {
-    public partial class Category
-    {
-        public Category()
-        {
-            Products = new HashSet<Product>();
-        }
+    public int Id { get; set; }
 
-        [Key]
-        public int ID { get; set; }
-        
-        [Required(ErrorMessage = "يجب إدخال أسم الفئة")]
-        public string Name { get; set; }
-        
-        [Required(ErrorMessage = "يجب إدخال الوصف")]
-        public string Description { get; set; }
+    public string Name { get; set; } = null!;
 
-        public virtual ICollection<Product> Products { get; set; }
-    }
+    public string Description { get; set; } = null!;
+
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

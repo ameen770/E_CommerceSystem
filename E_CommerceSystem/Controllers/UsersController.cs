@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public UsersController(ApplicationDbContext context)
+        public UsersController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,21 +22,21 @@ namespace E_CommerceSystem.Controllers
         // GET: Users
         public async Task<IActionResult> Index()
         {
-              return _context.users != null ? 
-                          View(await _context.users.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.users'  is null.");
+              return _context.Users != null ? 
+                          View(await _context.Users.ToListAsync()) :
+                          Problem("Entity set 'ECommerceDbContext.Users'  is null.");
         }
 
         // GET: Users/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.users == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.users
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
@@ -56,7 +56,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,Email,Password,Address,PhoneNumber,PaymentInformation")] User user)
+        public async Task<IActionResult> Create([Bind("Id,Name,Email,Password,Address,PhoneNumber,PaymentInformation")] User user)
         {
             if (ModelState.IsValid)
             {
@@ -70,12 +70,12 @@ namespace E_CommerceSystem.Controllers
         // GET: Users/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.users == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.users.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -88,9 +88,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Email,Password,Address,PhoneNumber,PaymentInformation")] User user)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email,Password,Address,PhoneNumber,PaymentInformation")] User user)
         {
-            if (id != user.ID)
+            if (id != user.Id)
             {
                 return NotFound();
             }
@@ -104,7 +104,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.ID))
+                    if (!UserExists(user.Id))
                     {
                         return NotFound();
                     }
@@ -121,13 +121,13 @@ namespace E_CommerceSystem.Controllers
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.users == null)
+            if (id == null || _context.Users == null)
             {
                 return NotFound();
             }
 
-            var user = await _context.users
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (user == null)
             {
                 return NotFound();
@@ -141,14 +141,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.users == null)
+            if (_context.Users == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.users'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.Users'  is null.");
             }
-            var user = await _context.users.FindAsync(id);
+            var user = await _context.Users.FindAsync(id);
             if (user != null)
             {
-                _context.users.Remove(user);
+                _context.Users.Remove(user);
             }
             
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool UserExists(int id)
         {
-          return (_context.users?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

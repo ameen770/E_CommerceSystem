@@ -1,29 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
 
-namespace E_CommerceSystem.Models
+namespace E_CommerceSystem.Models;
+
+public partial class Payment
 {
-    public class Payment
-    {
-        [Key]
-        public int ID { get; set; }
-        [Required]
-        public DateTime PaymentDate { get; set; }
-        [Required]
-        public string PaymentMethod { get; set; }
-        [Required]
-        public decimal Amount { get; set; }
+    public int Id { get; set; }
 
-        //[Required]
-        public int? UserID { get; set; }
+    public DateTime PaymentDate { get; set; }
 
-        [ForeignKey("UserID")]
-        public virtual User Users { get; set; }
- 
-        //[Required]
-        public int? OrderID { get; set; }
+    public string PaymentMethod { get; set; } = null!;
 
-        [ForeignKey("OrderID")]
-        public virtual Order Orders { get; set; }
-    }
+    public decimal Amount { get; set; }
+
+    public int UserId { get; set; }
+
+    public int OrderId { get; set; }
+
+    public virtual Order Order { get; set; } = null!;
+
+    public virtual User User { get; set; } = null!;
 }

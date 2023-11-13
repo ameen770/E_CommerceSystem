@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class CartItemsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public CartItemsController(ApplicationDbContext context)
+        public CartItemsController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,22 +22,22 @@ namespace E_CommerceSystem.Controllers
         // GET: CartItems
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.cartItems.Include(c => c.Carts).Include(c => c.Products);
-            return View(await applicationDbContext.ToListAsync());
+            var eCommerceDbContext = _context.CartItems.Include(c => c.Cart).Include(c => c.Product);
+            return View(await eCommerceDbContext.ToListAsync());
         }
 
         // GET: CartItems/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.cartItems == null)
+            if (id == null || _context.CartItems == null)
             {
                 return NotFound();
             }
 
-            var cartItem = await _context.cartItems
-                .Include(c => c.Carts)
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var cartItem = await _context.CartItems
+                .Include(c => c.Cart)
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (cartItem == null)
             {
                 return NotFound();
@@ -49,8 +49,8 @@ namespace E_CommerceSystem.Controllers
         // GET: CartItems/Create
         public IActionResult Create()
         {
-            ViewData["CartID"] = new SelectList(_context.carts, "ID", "ID");
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category");
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
             return View();
         }
 
@@ -59,7 +59,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Quantity,Price,CartID,ProductID")] CartItem cartItem)
+        public async Task<IActionResult> Create([Bind("Id,Quantity,Price,CartId,ProductId")] CartItem cartItem)
         {
             if (ModelState.IsValid)
             {
@@ -67,26 +67,26 @@ namespace E_CommerceSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CartID"] = new SelectList(_context.carts, "ID", "ID", cartItem.CartID);
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", cartItem.ProductID);
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id", cartItem.CartId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", cartItem.ProductId);
             return View(cartItem);
         }
 
         // GET: CartItems/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.cartItems == null)
+            if (id == null || _context.CartItems == null)
             {
                 return NotFound();
             }
 
-            var cartItem = await _context.cartItems.FindAsync(id);
+            var cartItem = await _context.CartItems.FindAsync(id);
             if (cartItem == null)
             {
                 return NotFound();
             }
-            ViewData["CartID"] = new SelectList(_context.carts, "ID", "ID", cartItem.CartID);
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", cartItem.ProductID);
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id", cartItem.CartId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", cartItem.ProductId);
             return View(cartItem);
         }
 
@@ -95,9 +95,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Quantity,Price,CartID,ProductID")] CartItem cartItem)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Quantity,Price,CartId,ProductId")] CartItem cartItem)
         {
-            if (id != cartItem.ID)
+            if (id != cartItem.Id)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CartItemExists(cartItem.ID))
+                    if (!CartItemExists(cartItem.Id))
                     {
                         return NotFound();
                     }
@@ -122,23 +122,23 @@ namespace E_CommerceSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CartID"] = new SelectList(_context.carts, "ID", "ID", cartItem.CartID);
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", cartItem.ProductID);
+            ViewData["CartId"] = new SelectList(_context.Carts, "Id", "Id", cartItem.CartId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", cartItem.ProductId);
             return View(cartItem);
         }
 
         // GET: CartItems/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.cartItems == null)
+            if (id == null || _context.CartItems == null)
             {
                 return NotFound();
             }
 
-            var cartItem = await _context.cartItems
-                .Include(c => c.Carts)
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var cartItem = await _context.CartItems
+                .Include(c => c.Cart)
+                .Include(c => c.Product)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (cartItem == null)
             {
                 return NotFound();
@@ -152,14 +152,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.cartItems == null)
+            if (_context.CartItems == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.cartItems'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.CartItems'  is null.");
             }
-            var cartItem = await _context.cartItems.FindAsync(id);
+            var cartItem = await _context.CartItems.FindAsync(id);
             if (cartItem != null)
             {
-                _context.cartItems.Remove(cartItem);
+                _context.CartItems.Remove(cartItem);
             }
             
             await _context.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool CartItemExists(int id)
         {
-          return (_context.cartItems?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.CartItems?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

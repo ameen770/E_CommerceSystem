@@ -15,8 +15,14 @@ namespace E_CommerceSystem.Data
             : base(options)
         {
         }
+        //public ApplicationDbContext()
+        //{
 
-        public DbSet<User> users { get; set; }
+        //}
+
+        public DbSet<E_CommerceSystem.Models.User> User { get; set; } = default!;
+
+        /*public DbSet<User> users { get; set; }
         public DbSet<Product> products { get; set; }
         public DbSet<Order> orders { get; set; }
         public DbSet<OrderItem> orderItems { get; set; }
@@ -103,7 +109,7 @@ namespace E_CommerceSystem.Data
                 .WithMany(p => p.Wishlists)
                 .HasForeignKey(w => w.ProductID)
                 .OnDelete(DeleteBehavior.Restrict);
-        }
+        }*/
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             //=> optionsBuilder.UseSqlServer("Server=AMEEN-DESKTOP;Database=E_CommerceDB;Trusted_Connection=True;MultipleActiveResultSets=true;trustservercertificate=True;");

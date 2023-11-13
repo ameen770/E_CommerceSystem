@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class WishlistsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public WishlistsController(ApplicationDbContext context)
+        public WishlistsController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,22 +22,22 @@ namespace E_CommerceSystem.Controllers
         // GET: Wishlists
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.wishlists.Include(w => w.Products).Include(w => w.Users);
-            return View(await applicationDbContext.ToListAsync());
+            var eCommerceDbContext = _context.Wishlists.Include(w => w.Product).Include(w => w.User);
+            return View(await eCommerceDbContext.ToListAsync());
         }
 
         // GET: Wishlists/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.wishlists == null)
+            if (id == null || _context.Wishlists == null)
             {
                 return NotFound();
             }
 
-            var wishlist = await _context.wishlists
-                .Include(w => w.Products)
-                .Include(w => w.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var wishlist = await _context.Wishlists
+                .Include(w => w.Product)
+                .Include(w => w.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (wishlist == null)
             {
                 return NotFound();
@@ -49,8 +49,8 @@ namespace E_CommerceSystem.Controllers
         // GET: Wishlists/Create
         public IActionResult Create()
         {
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category");
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -59,7 +59,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Date,UserID,ProductID")] Wishlist wishlist)
+        public async Task<IActionResult> Create([Bind("Id,Date,UserId,ProductId")] Wishlist wishlist)
         {
             if (ModelState.IsValid)
             {
@@ -67,26 +67,26 @@ namespace E_CommerceSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", wishlist.ProductID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", wishlist.UserID);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", wishlist.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", wishlist.UserId);
             return View(wishlist);
         }
 
         // GET: Wishlists/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.wishlists == null)
+            if (id == null || _context.Wishlists == null)
             {
                 return NotFound();
             }
 
-            var wishlist = await _context.wishlists.FindAsync(id);
+            var wishlist = await _context.Wishlists.FindAsync(id);
             if (wishlist == null)
             {
                 return NotFound();
             }
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", wishlist.ProductID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", wishlist.UserID);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", wishlist.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", wishlist.UserId);
             return View(wishlist);
         }
 
@@ -95,9 +95,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Date,UserID,ProductID")] Wishlist wishlist)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,UserId,ProductId")] Wishlist wishlist)
         {
-            if (id != wishlist.ID)
+            if (id != wishlist.Id)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WishlistExists(wishlist.ID))
+                    if (!WishlistExists(wishlist.Id))
                     {
                         return NotFound();
                     }
@@ -122,23 +122,23 @@ namespace E_CommerceSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", wishlist.ProductID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", wishlist.UserID);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", wishlist.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", wishlist.UserId);
             return View(wishlist);
         }
 
         // GET: Wishlists/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.wishlists == null)
+            if (id == null || _context.Wishlists == null)
             {
                 return NotFound();
             }
 
-            var wishlist = await _context.wishlists
-                .Include(w => w.Products)
-                .Include(w => w.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var wishlist = await _context.Wishlists
+                .Include(w => w.Product)
+                .Include(w => w.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (wishlist == null)
             {
                 return NotFound();
@@ -152,14 +152,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.wishlists == null)
+            if (_context.Wishlists == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.wishlists'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.Wishlists'  is null.");
             }
-            var wishlist = await _context.wishlists.FindAsync(id);
+            var wishlist = await _context.Wishlists.FindAsync(id);
             if (wishlist != null)
             {
-                _context.wishlists.Remove(wishlist);
+                _context.Wishlists.Remove(wishlist);
             }
             
             await _context.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool WishlistExists(int id)
         {
-          return (_context.wishlists?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Wishlists?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -47,10 +47,16 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.StockQuantity)
         </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CategoryNavigation)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CategoryNavigation.Id)
+        </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="ID" />
+        <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

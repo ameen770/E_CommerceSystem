@@ -12,9 +12,9 @@ namespace E_CommerceSystem.Controllers
 {
     public class ReviewsController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ECommerceDbContext _context;
 
-        public ReviewsController(ApplicationDbContext context)
+        public ReviewsController(ECommerceDbContext context)
         {
             _context = context;
         }
@@ -22,22 +22,22 @@ namespace E_CommerceSystem.Controllers
         // GET: Reviews
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.reviews.Include(r => r.Products).Include(r => r.Users);
-            return View(await applicationDbContext.ToListAsync());
+            var eCommerceDbContext = _context.Reviews.Include(r => r.Product).Include(r => r.User);
+            return View(await eCommerceDbContext.ToListAsync());
         }
 
         // GET: Reviews/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.reviews == null)
+            if (id == null || _context.Reviews == null)
             {
                 return NotFound();
             }
 
-            var review = await _context.reviews
-                .Include(r => r.Products)
-                .Include(r => r.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var review = await _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (review == null)
             {
                 return NotFound();
@@ -49,8 +49,8 @@ namespace E_CommerceSystem.Controllers
         // GET: Reviews/Create
         public IActionResult Create()
         {
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category");
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
@@ -59,7 +59,7 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Rating,Comment,Date,UserID,ProductID")] Review review)
+        public async Task<IActionResult> Create([Bind("Id,Rating,Comment,Date,UserId,ProductId")] Review review)
         {
             if (ModelState.IsValid)
             {
@@ -67,26 +67,26 @@ namespace E_CommerceSystem.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", review.ProductID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", review.UserID);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", review.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", review.UserId);
             return View(review);
         }
 
         // GET: Reviews/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.reviews == null)
+            if (id == null || _context.Reviews == null)
             {
                 return NotFound();
             }
 
-            var review = await _context.reviews.FindAsync(id);
+            var review = await _context.Reviews.FindAsync(id);
             if (review == null)
             {
                 return NotFound();
             }
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", review.ProductID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", review.UserID);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", review.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", review.UserId);
             return View(review);
         }
 
@@ -95,9 +95,9 @@ namespace E_CommerceSystem.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Rating,Comment,Date,UserID,ProductID")] Review review)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Rating,Comment,Date,UserId,ProductId")] Review review)
         {
-            if (id != review.ID)
+            if (id != review.Id)
             {
                 return NotFound();
             }
@@ -111,7 +111,7 @@ namespace E_CommerceSystem.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ReviewExists(review.ID))
+                    if (!ReviewExists(review.Id))
                     {
                         return NotFound();
                     }
@@ -122,23 +122,23 @@ namespace E_CommerceSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductID"] = new SelectList(_context.products, "ID", "Category", review.ProductID);
-            ViewData["UserID"] = new SelectList(_context.users, "ID", "Address", review.UserID);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", review.ProductId);
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", review.UserId);
             return View(review);
         }
 
         // GET: Reviews/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.reviews == null)
+            if (id == null || _context.Reviews == null)
             {
                 return NotFound();
             }
 
-            var review = await _context.reviews
-                .Include(r => r.Products)
-                .Include(r => r.Users)
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var review = await _context.Reviews
+                .Include(r => r.Product)
+                .Include(r => r.User)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (review == null)
             {
                 return NotFound();
@@ -152,14 +152,14 @@ namespace E_CommerceSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.reviews == null)
+            if (_context.Reviews == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.reviews'  is null.");
+                return Problem("Entity set 'ECommerceDbContext.Reviews'  is null.");
             }
-            var review = await _context.reviews.FindAsync(id);
+            var review = await _context.Reviews.FindAsync(id);
             if (review != null)
             {
-                _context.reviews.Remove(review);
+                _context.Reviews.Remove(review);
             }
             
             await _context.SaveChangesAsync();
@@ -168,7 +168,7 @@ namespace E_CommerceSystem.Controllers
 
         private bool ReviewExists(int id)
         {
-          return (_context.reviews?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Reviews?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
